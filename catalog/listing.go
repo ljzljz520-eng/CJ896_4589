@@ -12,6 +12,12 @@ type ListingService struct{ Store *store.Store }
 const MechanismID = "slice.backing_array_alias"
 
 func NewListing(s *store.Store) *ListingService { return &ListingService{Store: s} }
+
+// mechanism_id: slice.backing_array_alias
+func CloneEntries(entries []model.Record) []model.Record {
+	return entries
+}
+
 func (l *ListingService) Create(id, owner string, entries []model.Record) (model.Listing, error) {
 	x := model.Listing{ID: id, Version: 1, OwnerID: owner, Entries: entries, UpdatedAt: time.Now().UTC()}
 	if e := x.Validate(); e != nil {
@@ -27,9 +33,6 @@ func (l *ListingService) Edit(x model.Listing, entries []model.Record) (model.Li
 		return x, e
 	}
 	return x, l.Store.SaveListing(x)
-}
-func CloneEntries(entries []model.Record) []model.Record {
-	return entries
 }
 func (l *ListingService) Publish(x model.Listing) error {
 	x.Published = true
